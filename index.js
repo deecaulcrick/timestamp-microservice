@@ -20,16 +20,12 @@ app.get("/", function (req, res) {
 
 // your first API endpoint...
 app.get("/api/:date", function (req, res) {
-  let date = new Date(req.params.date);
-  let dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+  const dateString = new Date(req.params.date);
+  const timestamp = new Date(parseInt(req.params.date));
+
+  const date = isNaN(req.params.date) ? dateString : timestamp;
+
+  let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   let dayOfTheWeek = dayNames[date.getDay()];
 
@@ -49,19 +45,20 @@ app.get("/api/:date", function (req, res) {
     "Dec",
   ];
 
-  let month = monthNames[date.getMonth()];
-  let year = date.getFullYear();
-  console.log(dayOfTheWeek, day, month, year);
-  //   Fri, 25 Dec 2015 00:00:00 GMT
-  let unix = date.valueOf();
-  if (date == "Invalid Date") {
-    res.json({ Error: "Invalid Date" });
-  } else {
-    res.json({
-      unix: unix,
-      utc: `${dayOfTheWeek}, ${day} ${month} ${year} 00:00:00 GMT`,
-    });
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+
+  const hours = date.getHours() - 1;
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  function pad(num) {
+    return (num < 10 ? "0" : "") + num;
   }
+  res.json({
+    unix: dateString.valueOf() || timestamp.valueOf(),
+    utc: `${dayOfTheWeek}, ${day} ${month} ${year} ${pad(hours)}:${pad(minutes)}:${pad(seconds)} GMT`,
+  });
 });
 
 // Listen on port set in environment variable or default to 3000
