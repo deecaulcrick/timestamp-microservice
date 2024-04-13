@@ -25,39 +25,9 @@ app.get("/api/:date", function (req, res) {
 
   const date = isNaN(req.params.date) ? dateString : timestamp;
 
-  let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  let dayOfTheWeek = dayNames[date.getDay()];
-
-  let day = date.getDate();
-  let monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  const month = monthNames[date.getMonth()];
-  const year = date.getFullYear();
-
-  const hours = date.getHours() - 1;
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-
-  function pad(num) {
-    return (num < 10 ? "0" : "") + num;
-  }
   res.json({
     unix: dateString.valueOf() || timestamp.valueOf(),
-    utc: `${dayOfTheWeek}, ${day} ${month} ${year} ${pad(hours)}:${pad(minutes)}:${pad(seconds)} GMT`,
+    utc: date.toUTCString(),
   });
 });
 
